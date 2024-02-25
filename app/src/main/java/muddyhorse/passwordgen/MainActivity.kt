@@ -39,7 +39,7 @@ private val current = MutableStateFlow("")
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+    window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
     val instructions = getString(R.string.default_instruction)
     current.value = instructions
 
