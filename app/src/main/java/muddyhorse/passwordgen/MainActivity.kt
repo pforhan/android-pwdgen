@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -38,8 +39,10 @@ private val current = MutableStateFlow("")
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE)
     val instructions = getString(R.string.default_instruction)
     current.value = instructions
+
     setContent {
       PasswordGenTheme {
         // A surface container using the 'background' color from the theme
