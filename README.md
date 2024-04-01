@@ -1,5 +1,5 @@
 # android-pwdgen
-Minimalistic pasword generator app
+Minimalistic password generator app
 
 <img src="app/src/main/res/mipmap-xxhdpi/appicon.jpg" width=25% height=25%/>
 

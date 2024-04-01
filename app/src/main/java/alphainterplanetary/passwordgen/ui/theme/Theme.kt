@@ -1,4 +1,4 @@
-package muddyhorse.passwordgen.ui.theme
+package alphainterplanetary.passwordgen.ui.theme
 
 import android.app.Activity
 import android.os.Build

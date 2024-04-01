@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-  namespace = "muddyhorse.passwordgen"
+  namespace = "alphainterplanetary.passwordgen"
   compileSdk = 34
 
   defaultConfig {
-    applicationId = "muddyhorse.passwordgen"
+    applicationId = "alphainterplanetary.passwordgen"
     minSdk = 24
     targetSdk = 34
     versionCode = 1

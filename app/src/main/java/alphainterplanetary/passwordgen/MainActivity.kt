@@ -1,10 +1,10 @@
-package muddyhorse.passwordgen
+package alphainterplanetary.passwordgen
 
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
-import android.view.WindowManager
+import android.view.WindowManager.LayoutParams
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,7 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
-import muddyhorse.passwordgen.ui.theme.PasswordGenTheme
+import alphainterplanetary.passwordgen.ui.theme.PasswordGenTheme
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+    window.addFlags(LayoutParams.FLAG_SECURE)
     val instructions = getString(R.string.default_instruction)
     current.value = instructions
 
