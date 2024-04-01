@@ -5,4 +5,4 @@ Minimalistic pasword generator app
 
 A simple password creator. No local storage, no network access.
 
-<img src="assets/screenshot-blank.png" width=40% height=40%/><img src="assets/screenshot-example.png" width=40% height=40%/>
+<img src="assets/screenshot-blank.png" width=40% height=40%/> <img src="assets/screenshot-example.png" width=40% height=40%/>
