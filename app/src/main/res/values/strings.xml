@@ -1,10 +1,14 @@
 <resources>
-  <string name="app_name">No Frills Password Generator</string>
+  <string name="app_name">AlphaInt Pwd Gen</string>
   <string name="copied_currrent">Copied current to clipboard</string>
   <string name="clear">Clear</string>
   <string name="copy">Copy</string>
   <string name="default_instruction">Tap New to create a password.</string>
-  <string name="header">No-frills Password Generator</string>
+  <string name="header">AlphaInt Pwd Gen</string>
   <string name="new_text">New</string>
   <string name="no_password_created">No Password created! Tap New to make a password.</string>
+  <string name="stats_lower">Lower case:</string>
+  <string name="stats_number">Numbers:</string>
+  <string name="stats_symbol">Symbols:</string>
+  <string name="stats_upper">Upper case:</string>
 </resources>

@@ -10,6 +10,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,12 +32,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import muddyhorse.passwordgen.ui.theme.PasswordGenTheme
 import kotlin.random.Random
 
-private val current = MutableStateFlow("")
-
 class MainActivity : ComponentActivity() {
+  private val current = MutableStateFlow("")
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
@@ -47,19 +49,84 @@ class MainActivity : ComponentActivity() {
       PasswordGenTheme {
         // A surface container using the 'background' color from the theme
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-          Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-          ) {
-            Text(
-              text = getString(R.string.header),
-              modifier = Modifier.padding(16.dp),
-              style = MaterialTheme.typography.headlineLarge)
-            CopyOnClickText(current)
-            ButtonRow(current)
-          }
+          PwdColumn(this, current)
         }
       }
+    }
+  }
+}
+
+class PwdStats {
+  var lower: Short = 0
+  var upper: Short = 0
+  var number: Short = 0
+  var symbol: Short = 0
+}
+
+@Composable
+private fun PwdColumn(context: Context, content: MutableStateFlow<String>) =
+  Column(
+    modifier = Modifier.fillMaxSize(),
+    horizontalAlignment = Alignment.CenterHorizontally
+  ) {
+    Text(
+      text = context.getString(R.string.header),
+      modifier = Modifier.padding(16.dp),
+      style = MaterialTheme.typography.headlineLarge
+    )
+    CopyOnClickText(content)
+    PasswordStatistics(context, content)
+    ButtonRow(content)
+
+  }
+
+@Composable fun PasswordStatistics(context: Context, content: MutableStateFlow<String>) {
+  Row(horizontalArrangement = Arrangement.SpaceBetween) {
+    Column(
+      horizontalAlignment = Alignment.End,
+      modifier = Modifier.padding(end = 4.dp)
+    ) {
+      Text(
+        text = context.getString(R.string.stats_lower),
+        style = MaterialTheme.typography.bodyMedium
+      )
+      Text(
+        text = context.getString(R.string.stats_upper),
+        style = MaterialTheme.typography.bodyMedium
+      )
+      Text(
+        text = context.getString(R.string.stats_number),
+        style = MaterialTheme.typography.bodyMedium
+      )
+      Text(
+        text = context.getString(R.string.stats_symbol),
+        style = MaterialTheme.typography.bodyMedium
+      )
+    }
+    Column {
+      val stats = content.map {
+        if (it == context.getString(R.string.default_instruction)) {
+          PwdStats()
+        } else {
+          stats(it)
+        }
+      }.collectAsState(initial = PwdStats()).value
+      Text(
+        text = stats.lower.toString(),
+        style = MaterialTheme.typography.bodyMedium
+      )
+      Text(
+        text = stats.upper.toString(),
+        style = MaterialTheme.typography.bodyMedium
+      )
+      Text(
+        text = stats.number.toString(),
+        style = MaterialTheme.typography.bodyMedium
+      )
+      Text(
+        text = stats.symbol.toString(),
+        style = MaterialTheme.typography.bodyMedium
+      )
     }
   }
 }
@@ -68,7 +135,7 @@ class MainActivity : ComponentActivity() {
 private fun ButtonRow(content: MutableStateFlow<String>) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
-    modifier = Modifier.padding(16.dp)
+    modifier = Modifier.padding(16.dp, top = 32.dp)
   ) {
     val padding = Modifier
       .padding(
@@ -79,7 +146,8 @@ private fun ButtonRow(content: MutableStateFlow<String>) {
     Button(
       modifier = padding,
       onClick = {
-        content.value = generateCharacters(16)
+        val pwd = generateCharacters(16)
+        content.value = pwd
       }) {
       Text(text = stringResource(R.string.new_text))
     }
@@ -95,19 +163,38 @@ private fun ButtonRow(content: MutableStateFlow<String>) {
     Button(
       modifier = padding,
       onClick = {
-        current.value = context.getString(R.string.default_instruction)
+        content.value = context.getString(R.string.default_instruction)
       }) {
       Text(text = stringResource(R.string.clear))
     }
   }
 }
 
-private fun generateCharacters(count: Int): String {
+fun generateCharacters(count: Int): String {
   val sb = StringBuilder()
   for (i in 0..count) {
-    sb.append('*' + Random.nextInt(80))
+    sb.append('!' + Random.nextInt(94))
   }
   return sb.toString()
+}
+
+fun stats(pwd: String) : PwdStats {
+  val pwdStats = PwdStats()
+
+  for (c in pwd) {
+    when {
+      c.isDigit() -> pwdStats.number++
+      c.isLetter() -> {
+        if (c.isUpperCase()) {
+          pwdStats.upper++
+        } else {
+          pwdStats.lower++
+        }
+      }
+      else -> pwdStats.symbol++
+    }
+  }
+  return pwdStats
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -153,6 +240,6 @@ private fun copyText(context: Context, textToUse: String) {
 
 @Preview(showBackground = true)
 @Composable
-fun TextAppPreview() {
-  CopyOnClickText(current)
+fun PwdPreview() {
+  PwdColumn(LocalContext.current, MutableStateFlow("F@k3Pa5%"))
 }
