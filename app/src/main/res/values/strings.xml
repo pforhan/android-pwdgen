@@ -1,14 +1,15 @@
 <resources>
-  <string name="app_name">AlphaInt Pwd Gen</string>
-  <string name="copied_currrent">Copied current to clipboard</string>
+  <string name="app_name">Alpha\u2019s Passwords</string>
   <string name="clear">Clear</string>
+  <string name="copied_current">Copied current to clipboard</string>
+  <string name="copied_password">Copied Password</string>
   <string name="copy">Copy</string>
   <string name="default_instruction">Tap New to create a password.</string>
-  <string name="header">AlphaInt Pwd Gen</string>
+  <string name="header">Random Generator</string>
   <string name="new_text">New</string>
-  <string name="no_password_created">No Password created! Tap New to make a password.</string>
   <string name="stats_lower">Lower case:</string>
   <string name="stats_number">Numbers:</string>
   <string name="stats_symbol">Symbols:</string>
+  <string name="stats_total">Total:</string>
   <string name="stats_upper">Upper case:</string>
 </resources>
