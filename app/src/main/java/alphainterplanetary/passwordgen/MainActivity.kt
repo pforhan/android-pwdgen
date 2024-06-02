@@ -1,7 +1,6 @@
 package alphainterplanetary.passwordgen
 
 import alphainterplanetary.passwordgen.ui.theme.PasswordGenTheme
-import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -24,28 +23,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons.Filled
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -62,7 +46,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 
 private const val LENGTH_DEFAULT = 16
 private const val LENGTH_MIN = 8
@@ -81,72 +64,9 @@ class MainActivity : ComponentActivity() {
       PasswordGenTheme {
         // A surface container using the 'background' color from the theme
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-          PopupAndMainUI(this, current)
+          PwdColumn(this, current)
         }
       }
-    }
-  }
-
-}
-
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun PopupAndMainUI(context: MainActivity, current: MutableStateFlow<PwdState>) {
-  val modalState = remember { mutableStateOf(false) }
-  var showBottomSheet by modalState
-
-  Scaffold(
-    floatingActionButton = {
-      ExtendedFloatingActionButton(
-        text = { Text("About") },
-        icon = { Icon(imageVector = Filled.Info, contentDescription = "") },
-        onClick = { showBottomSheet = true }
-      )
-    }
-  ) {
-    PwdColumn(context, current)
-    if (showBottomSheet) {
-      AboutSheet(modalState, context)
-    }
-  }
-}
-
-@Composable
-@OptIn(ExperimentalMaterial3Api::class)
-private fun AboutSheet(
-  modalState: MutableState<Boolean>,
-  context: MainActivity,
-) {
-  // About-popup management:
-  val sheetState = rememberModalBottomSheetState()
-  val scope = rememberCoroutineScope()
-  var showBottomSheet by modalState
-
-  ModalBottomSheet(
-    sheetState = sheetState,
-    onDismissRequest = {
-      showBottomSheet = false
-    }
-  ) {
-    Row(
-      modifier = Modifier.padding(LENGTH_DEFAULT.dp),
-    ) {
-      Button(
-        onClick = {
-          scope.launch {
-            sheetState.hide()
-          }.invokeOnCompletion {
-            if (!sheetState.isVisible) {
-              showBottomSheet = false
-            }
-          }
-        },
-      ) {
-        Icon(imageVector = Filled.Close, contentDescription = "")
-        Text(text = "Hide")
-      }
-      Links(context)
     }
   }
 }
@@ -166,6 +86,7 @@ private fun PwdColumn(context: Context, stateFlow: MutableStateFlow<PwdState>) =
     LengthSlider(stateFlow)
     PasswordStatistics(context, stateFlow)
     ButtonRow(stateFlow)
+    Links(context)
   }
 
 @Composable
@@ -191,7 +112,7 @@ private fun LengthSlider(stateFlow: MutableStateFlow<PwdState>) {
     ) {
       Text(
         text = context.getString(R.string.stats_total),
-        style = MaterialTheme.typography.bodyMedium
+        style = MaterialTheme.typography.bodyLarge
       )
       Text(
         text = context.getString(R.string.stats_lower),
@@ -214,7 +135,7 @@ private fun LengthSlider(stateFlow: MutableStateFlow<PwdState>) {
       val stats = stateFlow.collectAsState().value
       Text(
         text = stats.length.toString(),
-        style = MaterialTheme.typography.bodyMedium
+        style = MaterialTheme.typography.bodyLarge
       )
       Text(
         text = stats.lower.toString(),
@@ -266,8 +187,12 @@ private fun ButtonRow(stateFlow: MutableStateFlow<PwdState>) {
     Button(
       modifier = padding,
       onClick = {
+        val len = stateFlow.value.length
         stateFlow.value =
-          stateFlow.value.copy(content = context.getString(R.string.default_instruction))
+         PwdState(
+           length = len,
+           content = context.getString(R.string.default_instruction)
+         )
       }) {
       Text(text = stringResource(R.string.clear))
     }
@@ -276,7 +201,9 @@ private fun ButtonRow(stateFlow: MutableStateFlow<PwdState>) {
 
 @Composable
 fun Links(context: Context) {
-  Column(modifier = Modifier.fillMaxWidth()) {
+  Column(modifier = Modifier
+    .fillMaxWidth()
+    .padding(top = 20.dp)) {
     TextWithLink(
       context = context,
       prefix = "Source available on ",
@@ -288,7 +215,7 @@ fun Links(context: Context) {
       prefix = "Provided by ",
       link = "Alpha Interplanetary, LLC",
       url = "https://alphainterplanetary.com",
-      style = MaterialTheme.typography.bodySmall
+      style = MaterialTheme.typography.bodySmall,
     )
   }
 }
@@ -313,7 +240,6 @@ private fun ColumnScope.TextWithLink(
     },
     modifier = Companion
       .align(Alignment.CenterHorizontally)
-      .padding(LENGTH_DEFAULT.dp)
       .clickable(onClick = { launchUrl(context, url) })
   )
 }
@@ -366,7 +292,8 @@ private fun maybeNewAndCopyText(context: Context, stateFlow: MutableStateFlow<Pw
     ClipData.newPlainText(
       context.getString(R.string.copied_password),
       current.content
-    ))
+    )
+  )
   val toastMessage = context.getString(R.string.copied_current)
   Toast
     .makeText(context, toastMessage, Toast.LENGTH_SHORT)
