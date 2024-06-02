@@ -1,6 +1,7 @@
 package alphainterplanetary.passwordgen
 
 import alphainterplanetary.passwordgen.ui.theme.PasswordGenTheme
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -23,13 +24,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons.Filled
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -46,8 +62,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
-import kotlin.random.Random
+import kotlinx.coroutines.launch
 
 private const val LENGTH_DEFAULT = 16
 private const val LENGTH_MIN = 8
@@ -66,39 +81,74 @@ class MainActivity : ComponentActivity() {
       PasswordGenTheme {
         // A surface container using the 'background' color from the theme
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-          PwdColumn(this, current)
+          PopupAndMainUI(this, current)
         }
       }
     }
   }
+
 }
 
-data class PwdState(
-  val length: Int,
-  val content: String,
-) {
-  fun withNewPassword() = copy(content = generateCharacters(length))
-  fun withNewPassword(newLength: Int) =
-    PwdState(length = newLength, content = generateCharacters(newLength))
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PopupAndMainUI(context: MainActivity, current: MutableStateFlow<PwdState>) {
+  val modalState = remember { mutableStateOf(false) }
+  var showBottomSheet by modalState
 
-  private fun generateCharacters(count: Int): String {
-    val sb = StringBuilder()
-    // Make a new random for every invocation... that way we're seeded by real-world random input.
-    val random = Random(System.currentTimeMillis())
-    for (i in 0..<count) {
-      sb.append('!' + random.nextInt(94))
+  Scaffold(
+    floatingActionButton = {
+      ExtendedFloatingActionButton(
+        text = { Text("About") },
+        icon = { Icon(imageVector = Filled.Info, contentDescription = "") },
+        onClick = { showBottomSheet = true }
+      )
     }
-    return sb.toString()
+  ) {
+    PwdColumn(context, current)
+    if (showBottomSheet) {
+      AboutSheet(modalState, context)
+    }
   }
 }
 
-class CharacterBreakdown(
-  val total: Int
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun AboutSheet(
+  modalState: MutableState<Boolean>,
+  context: MainActivity,
 ) {
-  var lower: Short = 0
-  var upper: Short = 0
-  var number: Short = 0
-  var symbol: Short = 0
+  // About-popup management:
+  val sheetState = rememberModalBottomSheetState()
+  val scope = rememberCoroutineScope()
+  var showBottomSheet by modalState
+
+  ModalBottomSheet(
+    sheetState = sheetState,
+    onDismissRequest = {
+      showBottomSheet = false
+    }
+  ) {
+    Row(
+      modifier = Modifier.padding(LENGTH_DEFAULT.dp),
+    ) {
+      Button(
+        onClick = {
+          scope.launch {
+            sheetState.hide()
+          }.invokeOnCompletion {
+            if (!sheetState.isVisible) {
+              showBottomSheet = false
+            }
+          }
+        },
+      ) {
+        Icon(imageVector = Filled.Close, contentDescription = "")
+        Text(text = "Hide")
+      }
+      Links(context)
+    }
+  }
 }
 
 @Composable
@@ -116,7 +166,6 @@ private fun PwdColumn(context: Context, stateFlow: MutableStateFlow<PwdState>) =
     LengthSlider(stateFlow)
     PasswordStatistics(context, stateFlow)
     ButtonRow(stateFlow)
-    Links(context)
   }
 
 @Composable
@@ -162,15 +211,9 @@ private fun LengthSlider(stateFlow: MutableStateFlow<PwdState>) {
       )
     }
     Column {
-      val stats = stateFlow.map {
-        if (it.content == context.getString(R.string.default_instruction)) {
-          CharacterBreakdown(it.length)
-        } else {
-          stats(it.content)
-        }
-      }.collectAsState(initial = CharacterBreakdown(0)).value
+      val stats = stateFlow.collectAsState().value
       Text(
-        text = stats.total.toString(),
+        text = stats.length.toString(),
         style = MaterialTheme.typography.bodyMedium
       )
       Text(
@@ -279,26 +322,6 @@ private fun launchUrl(context: Context, url: String) {
   val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
   intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
   context.startActivity(intent)
-}
-
-fun stats(pwd: String): CharacterBreakdown {
-  val statistics = CharacterBreakdown(pwd.length)
-
-  for (c in pwd) {
-    when {
-      c.isDigit() -> statistics.number++
-      c.isLetter() -> {
-        if (c.isUpperCase()) {
-          statistics.upper++
-        } else {
-          statistics.lower++
-        }
-      }
-
-      else -> statistics.symbol++
-    }
-  }
-  return statistics
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
