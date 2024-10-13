@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager.LayoutParams
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -22,7 +23,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -53,6 +56,7 @@ private const val LENGTH_MAX = 30
 
 class MainActivity : ComponentActivity() {
   private val current = MutableStateFlow(PwdState(content = "", length = LENGTH_DEFAULT))
+  private val passwordStorage = PasswordStorage()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -63,8 +67,13 @@ class MainActivity : ComponentActivity() {
     setContent {
       PasswordGenTheme {
         // A surface container using the 'background' color from the theme
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-          PwdColumn(this, current)
+        Surface(
+          modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+          color = MaterialTheme.colorScheme.background
+        ) {
+          PwdColumn(this, passwordStorage, current)
         }
       }
     }
@@ -72,7 +81,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun PwdColumn(context: Context, stateFlow: MutableStateFlow<PwdState>) =
+private fun PwdColumn(
+  context: Context,
+  passwordStorage: PasswordStorage,
+  stateFlow: MutableStateFlow<PwdState>
+) =
   Column(
     modifier = Modifier.fillMaxSize(),
     horizontalAlignment = Alignment.CenterHorizontally
@@ -82,10 +95,10 @@ private fun PwdColumn(context: Context, stateFlow: MutableStateFlow<PwdState>) =
       modifier = Modifier.padding(LENGTH_DEFAULT.dp),
       style = MaterialTheme.typography.headlineLarge
     )
-    CopyOnClickText(stateFlow)
+    CopyOnClickText(passwordStorage, stateFlow)
     LengthSlider(stateFlow)
     PasswordStatistics(context, stateFlow)
-    ButtonRow(stateFlow)
+    ButtonRow(passwordStorage, stateFlow)
     Links(context)
   }
 
@@ -104,7 +117,10 @@ private fun LengthSlider(stateFlow: MutableStateFlow<PwdState>) {
   )
 }
 
-@Composable fun PasswordStatistics(context: Context, stateFlow: MutableStateFlow<PwdState>) {
+@Composable fun PasswordStatistics(
+  context: Context,
+  stateFlow: MutableStateFlow<PwdState>
+) {
   Row(horizontalArrangement = Arrangement.SpaceBetween) {
     Column(
       horizontalAlignment = Alignment.End,
@@ -158,7 +174,10 @@ private fun LengthSlider(stateFlow: MutableStateFlow<PwdState>) {
 }
 
 @Composable
-private fun ButtonRow(stateFlow: MutableStateFlow<PwdState>) {
+private fun ButtonRow(
+  passwordStorage: PasswordStorage,
+  stateFlow: MutableStateFlow<PwdState>
+) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
     modifier = Modifier.padding(LENGTH_DEFAULT.dp, top = 32.dp)
@@ -180,7 +199,7 @@ private fun ButtonRow(stateFlow: MutableStateFlow<PwdState>) {
 
     Button(
       modifier = padding,
-      onClick = { maybeNewAndCopyText(context, stateFlow) }) {
+      onClick = { maybeNewAndCopyText(context, passwordStorage, stateFlow) }) {
       Text(text = stringResource(R.string.copy))
     }
 
@@ -189,10 +208,10 @@ private fun ButtonRow(stateFlow: MutableStateFlow<PwdState>) {
       onClick = {
         val len = stateFlow.value.length
         stateFlow.value =
-         PwdState(
-           length = len,
-           content = context.getString(R.string.default_instruction)
-         )
+          PwdState(
+            length = len,
+            content = context.getString(R.string.default_instruction)
+          )
       }) {
       Text(text = stringResource(R.string.clear))
     }
@@ -201,9 +220,11 @@ private fun ButtonRow(stateFlow: MutableStateFlow<PwdState>) {
 
 @Composable
 fun Links(context: Context) {
-  Column(modifier = Modifier
-    .fillMaxWidth()
-    .padding(top = 20.dp)) {
+  Column(
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(top = 20.dp)
+  ) {
     TextWithLink(
       context = context,
       prefix = "Source available on ",
@@ -244,7 +265,10 @@ private fun ColumnScope.TextWithLink(
   )
 }
 
-private fun launchUrl(context: Context, url: String) {
+private fun launchUrl(
+  context: Context,
+  url: String
+) {
   val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
   intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
   context.startActivity(intent)
@@ -252,7 +276,10 @@ private fun launchUrl(context: Context, url: String) {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun CopyOnClickText(stateFlow: MutableStateFlow<PwdState>) {
+fun CopyOnClickText(
+  passwordStorage: PasswordStorage,
+  stateFlow: MutableStateFlow<PwdState>
+) {
   Box(
     modifier = Modifier
       .padding(32.dp)
@@ -273,14 +300,18 @@ fun CopyOnClickText(stateFlow: MutableStateFlow<PwdState>) {
         .padding(LENGTH_DEFAULT.dp)
         .fillMaxWidth()
         .clickable {
-          maybeNewAndCopyText(context, stateFlow)
+          maybeNewAndCopyText(context, passwordStorage, stateFlow)
         },
       style = MaterialTheme.typography.headlineMedium.copy(lineBreak = LineBreak.Simple)
     )
   }
 }
 
-private fun maybeNewAndCopyText(context: Context, stateFlow: MutableStateFlow<PwdState>) {
+private fun maybeNewAndCopyText(
+  context: Context,
+  passwordStorage: PasswordStorage,
+  stateFlow: MutableStateFlow<PwdState>
+) {
   var current = stateFlow.value
   if (current.content == context.getString(R.string.default_instruction)) {
     // Go ahead and generate first so the copy can proceed.
@@ -294,6 +325,11 @@ private fun maybeNewAndCopyText(context: Context, stateFlow: MutableStateFlow<Pw
       current.content
     )
   )
+  passwordStorage.savePassword(current.content)
+  Log.d(
+    "pwdgen",
+    passwordStorage.listPasswords().joinToString { it.password }
+  )
   val toastMessage = context.getString(R.string.copied_current)
   Toast
     .makeText(context, toastMessage, Toast.LENGTH_SHORT)
@@ -303,5 +339,5 @@ private fun maybeNewAndCopyText(context: Context, stateFlow: MutableStateFlow<Pw
 @Preview(showBackground = true)
 @Composable
 fun PwdPreview() {
-  PwdColumn(LocalContext.current, MutableStateFlow(PwdState(8, "F@k3Pa5%")))
+  PwdColumn(LocalContext.current, PasswordStorage(), MutableStateFlow(PwdState(8, "F@k3Pa5%")))
 }
