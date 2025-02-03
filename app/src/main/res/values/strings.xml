@@ -1,12 +1,14 @@
 <resources>
   <string name="app_name">Alpha\u2019s Passwords</string>
-  <string name="clear">Clear</string>
   <string name="copied_current">Copied current to clipboard</string>
   <string name="copied_password">Copied Password</string>
   <string name="copy">Copy</string>
   <string name="default_instruction">Tap New to create a password.</string>
+  <string name="delete">Delete</string>
   <string name="header">Random Generator</string>
   <string name="new_text">New</string>
+  <string name="recent">Recent</string>
+  <string name="reset">Reset</string>
   <string name="stats_lower">Lower case:</string>
   <string name="stats_number">Numbers:</string>
   <string name="stats_symbol">Symbols:</string>

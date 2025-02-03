@@ -2,6 +2,11 @@ package alphainterplanetary.passwordgen
 
 import kotlin.random.Random
 
+data class UiState(
+  val pwdState: PwdState,
+  val recent: List<String>
+)
+
 data class PwdState(
   val length: Int,
   val content: String,
