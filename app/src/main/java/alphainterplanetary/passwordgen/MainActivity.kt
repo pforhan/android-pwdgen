@@ -59,17 +59,27 @@ private const val LENGTH_DEFAULT = 16
 private const val LENGTH_MIN = 8
 private const val LENGTH_MAX = 30
 
+/**
+ * The main activity for the Password Generator app.
+ */
 class MainActivity : ComponentActivity() {
+  /**
+   * A [MutableStateFlow] that holds the current [UiState] of the app.
+   */
   private val current = MutableStateFlow(
     UiState(
       pwdState = PwdState(content = "", length = LENGTH_DEFAULT),
       recent = emptyList()
     )
   )
+  /**
+   * An instance of [PasswordStorage] for securely storing generated passwords.
+   */
   private val passwordStorage = PasswordStorage()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    // Prevent screenshots
     window.addFlags(LayoutParams.FLAG_SECURE)
     val instructions = getString(R.string.default_instruction)
     current.value = UiState(
@@ -93,6 +103,13 @@ class MainActivity : ComponentActivity() {
   }
 }
 
+/**
+ * A composable function that displays the main content of the password generator.
+ *
+ * @param context The [Context] for accessing resources.
+ * @param passwordStorage The [PasswordStorage] for managing stored passwords.
+ * @param stateFlow The [MutableStateFlow] for managing the UI state.
+ */
 @Composable
 private fun PwdColumn(
   context: Context,
@@ -115,6 +132,11 @@ private fun PwdColumn(
   Links(context)
 }
 
+/**
+ * A composable function that displays a slider for selecting the password length.
+ *
+ * @param stateFlow The [MutableStateFlow] for managing the UI state.
+ */
 @Composable
 private fun LengthSlider(stateFlow: MutableStateFlow<UiState>) {
   val contentState = stateFlow.collectAsState()
@@ -132,6 +154,12 @@ private fun LengthSlider(stateFlow: MutableStateFlow<UiState>) {
   )
 }
 
+/**
+ * A composable function that displays password statistics.
+ *
+ * @param context The [Context] for accessing resources.
+ * @param stateFlow The [MutableStateFlow] for managing the UI state.
+ */
 @Composable fun PasswordStatistics(
   context: Context,
   stateFlow: MutableStateFlow<UiState>
@@ -188,6 +216,12 @@ private fun LengthSlider(stateFlow: MutableStateFlow<UiState>) {
   }
 }
 
+/**
+ * A composable function that displays the buttons for generating a new password, copying, and resetting.
+ *
+ * @param passwordStorage The [PasswordStorage] for managing stored passwords.
+ * @param stateFlow The [MutableStateFlow] for managing the UI state.
+ */
 @Composable
 private fun ButtonRow(
   passwordStorage: PasswordStorage,
@@ -236,6 +270,13 @@ private fun ButtonRow(
   }
 }
 
+/**
+ * A composable function that displays the password history list.
+ *
+ * @param context The [Context] for accessing resources.
+ * @param passwordStorage The [PasswordStorage] for managing stored passwords.
+ * @param stateFlow The [MutableStateFlow] for managing the UI state.
+ */
 @Composable
 fun HistoryList(
   context: Context,
@@ -289,6 +330,12 @@ fun HistoryList(
   }
 }
 
+/**
+ * A composable function that displays a divider with text.
+ *
+ * @param text The text to display.
+ * @param modifier The modifier for the row.
+ */
 @Composable
 fun DividerWithText(
   text: String,
@@ -309,6 +356,11 @@ fun DividerWithText(
   }
 }
 
+/**
+ * A composable function that displays links.
+ *
+ * @param context The [Context] for accessing resources.
+ */
 @Composable
 fun Links(context: Context) {
   Column(
@@ -332,12 +384,20 @@ fun Links(context: Context) {
   }
 }
 
+/**
+ * A composable function that displays text with a link.
+ *
+ * @param context The [Context] for accessing resources.
+ * @param prefix The text to display before the link.
+ * @param link The text to display as a link.
+ * @param url The URL to launch when the link is clicked.
+ * @param style The style of the text.
+ */
 @Composable
 private fun ColumnScope.TextWithLink(
   context: Context,
   prefix: String,
   link: String,
-  suffix: String = ".",
   url: String,
   style: TextStyle = MaterialTheme.typography.bodyMedium,
 ) {
@@ -348,23 +408,32 @@ private fun ColumnScope.TextWithLink(
       withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline)) {
         append(link)
       }
-      append(suffix)
+      append(".")
     },
     modifier = Companion
       .align(Alignment.CenterHorizontally)
-      .clickable(onClick = { launchUrl(context, url) })
+      .clickable(onClick = { context.launchUrl(url) })
   )
 }
 
-private fun launchUrl(
-  context: Context,
+/**
+ * Launches a URL in a browser.
+ */
+private fun Context.launchUrl(
   url: String
 ) {
   val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
   intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-  context.startActivity(intent)
+  startActivity(intent)
 }
 
+/**
+ * A composable function that displays the generated password and allows the user to copy it
+ * by tapping on the field.
+ *
+ * @param passwordStorage The [PasswordStorage] for managing stored passwords.
+ * @param stateFlow The [MutableStateFlow] for managing the UI state.
+ */
 @Composable
 fun CopyOnClickText(
   passwordStorage: PasswordStorage,
@@ -397,6 +466,13 @@ fun CopyOnClickText(
   }
 }
 
+/**
+ * Generates a new password if the instructions are still displaying and copies it to the clipboard.
+ *
+ * @param context The [Context] for accessing resources.
+ * @param passwordStorage The [PasswordStorage] for managing stored passwords.
+ * @param stateFlow The [MutableStateFlow] for managing the UI state.
+ */
 private fun maybeNewAndCopyText(
   context: Context,
   passwordStorage: PasswordStorage,
@@ -415,6 +491,13 @@ private fun maybeNewAndCopyText(
   stateFlow.value = current.copy(recent = passwordStorage.listPasswords())
 }
 
+/**
+ * Copies text to the clipboard.
+ *
+ * @param context The [Context] for accessing resources.
+ * @param value The text to copy.
+ * @param message The message to display after copying.
+ */
 private fun copyToClipboard(
   context: Context,
   value: String,
@@ -429,6 +512,9 @@ private fun copyToClipboard(
     .show()
 }
 
+/**
+ * A preview function for the [PwdColumn] composable.
+ */
 @Preview(showBackground = true)
 @Composable
 fun PwdPreview() {

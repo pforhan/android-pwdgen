@@ -2,13 +2,21 @@ package alphainterplanetary.passwordgen
 
 import android.security.keystore.KeyGenParameterSpec.Builder
 import android.security.keystore.KeyProperties
-import android.util.Log
 import java.security.KeyStore
 import javax.crypto.KeyGenerator
 
+/** The Android KeyStore type. */
+const val ANDROID_KEY_STORE = "AndroidKeyStore"
+/** The prefix for password entries in the KeyStore. */
+const val PASSWORD_ENTRY_PREFIX = "pwd"
+
+/**
+ * A class for securely storing and retrieving passwords.
+ */
 class PasswordStorage {
 
   private val passwordQueue = PasswordQueue()
+  /** The last error encountered during a storage operation, if any. */
   var lastError: Exception? = null
 
   private val keyStore: KeyStore = KeyStore.getInstance(ANDROID_KEY_STORE).apply {
@@ -34,7 +42,7 @@ class PasswordStorage {
     removePasswordsFromKeystore()
     val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEY_STORE)
     passwordQueue.list().forEachIndexed { index, password ->
-      keyGenerator.save(password.toAlias(index))
+      keyGenerator.save("$PASSWORD_ENTRY_PREFIX$index$password")
     }
   }
 
@@ -53,6 +61,7 @@ class PasswordStorage {
 
   /**
    * Add a password to the store, ejecting the eldest if there are more than the maximum.
+   * @param password The password to add.
    * @return true if the save was successful, false if this password is the same as the last
    * or if there was an error saving.
    */
@@ -72,14 +81,11 @@ class PasswordStorage {
   }
 
   /** List all passwords. These are ordered from most recent to least recent. */
-  fun listPasswords(): List<String> {
-    Log.d("aps", " Passwds: ${passwordQueue.list().reversed()}")
-
-    return passwordQueue.list().reversed()
-  }
+  fun listPasswords(): List<String> = passwordQueue.list().reversed()
 
   /**
    * Remove a password from the store.
+   * @param password The password to remove.
    * @return true if the save was successful, false otherwise.
    */
   fun remove(password: String): Boolean = try {
@@ -92,15 +98,6 @@ class PasswordStorage {
     false
   }
 
-  // Method to remove all keys from the Keystore
-  fun removeAllEntries() = try {
-    passwordQueue.clear()
-    removePasswordsFromKeystore()
-  } catch (e: Exception) {
-    lastError = e
-    e.printStackTrace()
-  }
-
   private fun removePasswordsFromKeystore() {
     keyStore.aliases().toList()
       .filter { it.startsWith(PASSWORD_ENTRY_PREFIX) }
@@ -108,13 +105,20 @@ class PasswordStorage {
   }
 }
 
-const val ANDROID_KEY_STORE = "AndroidKeyStore"
-const val PASSWORD_ENTRY_PREFIX = "pwd"
-private fun String.toAlias(index: Int) = "$PASSWORD_ENTRY_PREFIX$index$this"
-
+/**
+ * A queue for storing passwords.
+ *
+ * @property maxSize The maximum size of the queue.
+ */
 private class PasswordQueue(private val maxSize: Int = 3) {
   private val queue = mutableListOf<String>()
 
+  /**
+   * Adds a new entry to the queue.
+   *
+   * @param newEntry The new entry to add.
+   * @return The eldest entry if the queue is full, null otherwise.
+   */
   fun enqueue(newEntry: String): String? {
     queue.add(newEntry)
     return if (queue.size > maxSize) {
@@ -122,12 +126,25 @@ private class PasswordQueue(private val maxSize: Int = 3) {
     } else null
   }
 
+  /**
+   * Returns the last entry in the queue without removing it.
+   *
+   * @return The last entry in the queue, or null if the queue is empty.
+   */
   fun peekLast(): String? = queue.lastOrNull()
 
-  fun clear() = queue.clear()
-
+  /**
+   * Returns a list of all entries in the queue.
+   *
+   * @return A list of all entries in the queue.
+   */
   fun list(): List<String> = queue.toList()
 
+  /**
+   * Removes a password from the queue.
+   *
+   * @param password The password to remove.
+   */
   fun remove(password: String) {
     queue.remove(password)
   }
