@@ -1,8 +1,8 @@
 # android-pwdgen
 Minimalistic password generator app
 
-<img src="app/src/main/res/mipmap-xxhdpi/appicon.jpg" width=25% height=25%/>
+<img src="app/src/main/res/mipmap-xxhdpi/appicon.jpg" width=25% height=25% alt="App icon">
 
-A simple password creator. No local storage, no network access.
+A simple password creator. No local storage, no network access. Uses the Android keystore to securely save recent entries.
 
-<img src="assets/screenshot-blank.png" width=40% height=40%/> <img src="assets/screenshot-example.png" width=40% height=40%/>
+<img src="assets/pwdgen-empty.png" width=40% height=40% alt="Empty UI"> <img src="assets/pwdgen-full.png" width=40% height=40% alt="UI with some saved passwords">
