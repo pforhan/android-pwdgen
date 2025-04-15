@@ -1,5 +1,5 @@
 # android-pwdgen
-Minimalistic password generator app
+Minimalistic password generator app. Find in the [play store](https://play.google.com/store/apps/details?id=alphainterplanetary.passwordgen).
 
 <img src="app/src/main/res/mipmap-xxhdpi/appicon.jpg" width=25% height=25% alt="App icon">
 
