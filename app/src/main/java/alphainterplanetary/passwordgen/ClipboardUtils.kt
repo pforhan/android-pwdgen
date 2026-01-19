@@ -1,8 +1,5 @@
-package alphainterplanetary.passwordgen.ui
+package alphainterplanetary.passwordgen
 
-import alphainterplanetary.passwordgen.PasswordStorage
-import alphainterplanetary.passwordgen.R
-import alphainterplanetary.passwordgen.UiState
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context

@@ -3,6 +3,7 @@ package alphainterplanetary.passwordgen.ui
 import alphainterplanetary.passwordgen.PasswordStorage
 import alphainterplanetary.passwordgen.R
 import alphainterplanetary.passwordgen.UiState
+import alphainterplanetary.passwordgen.copyToClipboard
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.clickable

@@ -1,7 +1,9 @@
 package alphainterplanetary.passwordgen.ui
 
+import alphainterplanetary.passwordgen.LENGTH_DEFAULT
 import alphainterplanetary.passwordgen.PasswordStorage
 import alphainterplanetary.passwordgen.UiState
+import alphainterplanetary.passwordgen.maybeNewAndCopyText
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

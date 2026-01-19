@@ -1,5 +1,7 @@
 package alphainterplanetary.passwordgen.ui
 
+import alphainterplanetary.passwordgen.LENGTH_MAX
+import alphainterplanetary.passwordgen.LENGTH_MIN
 import alphainterplanetary.passwordgen.UiState
 import androidx.compose.material3.Slider
 import androidx.compose.runtime.Composable

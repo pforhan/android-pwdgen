@@ -1,4 +1,4 @@
-package alphainterplanetary.passwordgen.ui
+package alphainterplanetary.passwordgen
 
 const val LENGTH_DEFAULT = 16
 const val LENGTH_MIN = 8

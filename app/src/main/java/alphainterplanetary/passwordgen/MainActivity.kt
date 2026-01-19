@@ -3,7 +3,6 @@ package alphainterplanetary.passwordgen
 import alphainterplanetary.passwordgen.ui.ButtonRow
 import alphainterplanetary.passwordgen.ui.CopyOnClickText
 import alphainterplanetary.passwordgen.ui.HistoryList
-import alphainterplanetary.passwordgen.ui.LENGTH_DEFAULT
 import alphainterplanetary.passwordgen.ui.LengthSlider
 import alphainterplanetary.passwordgen.ui.Links
 import alphainterplanetary.passwordgen.ui.PasswordStatistics
