@@ -7,6 +7,7 @@ import javax.crypto.KeyGenerator
 
 /** The Android KeyStore type. */
 const val ANDROID_KEY_STORE = "AndroidKeyStore"
+
 /** The prefix for password entries in the KeyStore. */
 const val PASSWORD_ENTRY_PREFIX = "pwd"
 
@@ -16,6 +17,7 @@ const val PASSWORD_ENTRY_PREFIX = "pwd"
 class PasswordStorage {
 
   private val passwordQueue = PasswordQueue()
+
   /** The last error encountered during a storage operation, if any. */
   var lastError: Exception? = null
 
@@ -40,7 +42,8 @@ class PasswordStorage {
 
   private fun saveAll() {
     removePasswordsFromKeystore()
-    val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEY_STORE)
+    val keyGenerator =
+      KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEY_STORE)
     passwordQueue.list().forEachIndexed { index, password ->
       keyGenerator.save("$PASSWORD_ENTRY_PREFIX$index$password")
     }

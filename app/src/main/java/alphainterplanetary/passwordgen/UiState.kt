@@ -10,7 +10,7 @@ import kotlin.random.Random
  */
 data class UiState(
   val pwdState: PwdState,
-  val recent: List<String>
+  val recent: List<String>,
 )
 
 /**
@@ -100,6 +100,7 @@ data class PwdState(
             lower++
           }
         }
+
         else -> symbol++
       }
     }
