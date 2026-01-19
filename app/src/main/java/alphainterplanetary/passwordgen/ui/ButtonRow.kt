@@ -6,9 +6,11 @@ import alphainterplanetary.passwordgen.PwdState
 import alphainterplanetary.passwordgen.R
 import alphainterplanetary.passwordgen.UiState
 import alphainterplanetary.passwordgen.maybeNewAndCopyText
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,41 +36,68 @@ fun ButtonRow(
     verticalAlignment = Alignment.CenterVertically,
     modifier = Modifier.padding(LENGTH_DEFAULT.dp, top = 32.dp)
   ) {
-    val padding = Modifier
-      .padding(
-        PaddingValues(
-          horizontal = LENGTH_DEFAULT.dp,
+    ButtonContent(passwordStorage, stateFlow)
+  }
+}
+
+/**
+ * A composable function that displays the buttons in a column.
+ */
+@Composable
+fun ButtonColumn(
+  passwordStorage: PasswordStorage,
+  stateFlow: MutableStateFlow<UiState>,
+) {
+  Column(
+    horizontalAlignment = Alignment.CenterHorizontally,
+    modifier = Modifier
+      .wrapContentSize()
+      .padding(LENGTH_DEFAULT.dp, top = 32.dp)
+  ) {
+    ButtonContent(passwordStorage, stateFlow)
+  }
+}
+
+@Composable
+private fun ButtonContent(
+  passwordStorage: PasswordStorage,
+  stateFlow: MutableStateFlow<UiState>,
+) {
+  val padding = Modifier
+    .padding(
+      PaddingValues(
+        horizontal = LENGTH_DEFAULT.dp,
+        vertical = 4.dp
+      )
+    )
+  Button(
+    modifier = padding,
+    onClick = {
+      stateFlow.value = stateFlow.value.copy(
+        pwdState = stateFlow.value.pwdState.withNewPassword()
+      )
+    }) {
+    Text(text = stringResource(R.string.new_text))
+  }
+  val context = LocalContext.current
+
+  Button(
+    modifier = padding,
+    onClick = { maybeNewAndCopyText(context, passwordStorage, stateFlow) }) {
+    Text(text = stringResource(R.string.copy))
+  }
+
+  Button(
+    modifier = padding,
+    onClick = {
+      val len = stateFlow.value.pwdState.length
+      stateFlow.value = stateFlow.value.copy(
+        pwdState = PwdState(
+          length = len,
+          content = context.getString(R.string.default_instruction)
         )
       )
-    Button(
-      modifier = padding,
-      onClick = {
-        stateFlow.value = stateFlow.value.copy(
-          pwdState = stateFlow.value.pwdState.withNewPassword()
-        )
-      }) {
-      Text(text = stringResource(R.string.new_text))
-    }
-    val context = LocalContext.current
-
-    Button(
-      modifier = padding,
-      onClick = { maybeNewAndCopyText(context, passwordStorage, stateFlow) }) {
-      Text(text = stringResource(R.string.copy))
-    }
-
-    Button(
-      modifier = padding,
-      onClick = {
-        val len = stateFlow.value.pwdState.length
-        stateFlow.value = stateFlow.value.copy(
-          pwdState = PwdState(
-            length = len,
-            content = context.getString(R.string.default_instruction)
-          )
-        )
-      }) {
-      Text(text = stringResource(R.string.reset))
-    }
+    }) {
+    Text(text = stringResource(R.string.reset))
   }
 }

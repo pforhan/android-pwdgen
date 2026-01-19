@@ -22,3 +22,21 @@ fun PwdPreview() {
     )
   )
 }
+
+/**
+ * A preview function for the [PwdColumn] composable in landscape orientation.
+ */
+@Preview(showBackground = true, widthDp = 800, heightDp = 480)
+@Composable
+fun PwdLandscapePreview() {
+  PwdColumn(
+    LocalContext.current,
+    PasswordStorage(),
+    MutableStateFlow(
+      UiState(
+        PwdState(8, "F@k3Pa5%"),
+        listOf("Password1", "password2", "aPassword3")
+      )
+    )
+  )
+}
