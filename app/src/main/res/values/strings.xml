@@ -14,4 +14,5 @@
   <string name="stats_symbol">Symbols:</string>
   <string name="stats_total">Total:</string>
   <string name="stats_upper">Upper case:</string>
+  <string name="avoid_ambiguous">Avoid\nambiguous</string>
 </resources>

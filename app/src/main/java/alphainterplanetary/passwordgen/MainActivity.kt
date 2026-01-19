@@ -4,7 +4,7 @@ import alphainterplanetary.passwordgen.ui.ButtonColumn
 import alphainterplanetary.passwordgen.ui.ButtonRow
 import alphainterplanetary.passwordgen.ui.CopyOnClickText
 import alphainterplanetary.passwordgen.ui.HistoryList
-import alphainterplanetary.passwordgen.ui.LengthSlider
+import alphainterplanetary.passwordgen.ui.PwdConfiguration
 import alphainterplanetary.passwordgen.ui.Links
 import alphainterplanetary.passwordgen.ui.PasswordStatistics
 import alphainterplanetary.passwordgen.ui.theme.PasswordGenTheme
@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import androidx.activity.viewModels
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
@@ -34,14 +35,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
  */
 class MainActivity : ComponentActivity() {
   /**
-   * A [MutableStateFlow] that holds the current [UiState] of the app.
+   * The [MainViewModel] that holds the current [UiState] of the app.
    */
-  private val current = MutableStateFlow(
-    UiState(
-      pwdState = PwdState(content = "", length = LENGTH_DEFAULT),
-      recent = emptyList()
-    )
-  )
+  private val viewModel: MainViewModel by viewModels()
 
   /**
    * An instance of [PasswordStorage] for securely storing generated passwords.
@@ -53,10 +49,7 @@ class MainActivity : ComponentActivity() {
     // Prevent screenshots
     window.addFlags(LayoutParams.FLAG_SECURE)
     val instructions = getString(R.string.default_instruction)
-    current.value = UiState(
-      pwdState = current.value.pwdState.copy(content = instructions),
-      recent = passwordStorage.listPasswords()
-    )
+    viewModel.setInitialState(instructions, passwordStorage.listPasswords())
 
     setContent {
       PasswordGenTheme {
@@ -67,7 +60,7 @@ class MainActivity : ComponentActivity() {
             .verticalScroll(rememberScrollState()),
           color = MaterialTheme.colorScheme.background
         ) {
-          PwdColumn(this, passwordStorage, current)
+          PwdColumn(this, passwordStorage, viewModel.current)
         }
       }
     }
@@ -113,7 +106,7 @@ internal fun PwdPortrait(
     style = MaterialTheme.typography.headlineLarge
   )
   CopyOnClickText(passwordStorage, stateFlow)
-  LengthSlider(stateFlow)
+  PwdConfiguration(stateFlow)
   PasswordStatistics(context, stateFlow)
   ButtonRow(passwordStorage, stateFlow)
   HistoryList(context, passwordStorage, stateFlow)
@@ -140,7 +133,7 @@ internal fun PwdLandscape(
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
     CopyOnClickText(passwordStorage, stateFlow)
-    LengthSlider(stateFlow)
+    PwdConfiguration(stateFlow)
     PasswordStatistics(context, stateFlow)
   }
 

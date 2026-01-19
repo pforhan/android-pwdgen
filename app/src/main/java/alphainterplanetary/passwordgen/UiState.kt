@@ -30,30 +30,30 @@ data class PwdState(
   val upper: Short = 0,
   val number: Short = 0,
   val symbol: Short = 0,
+  val avoidAmbiguous: Boolean = true,
 ) {
-  /**
-   * Generates a new password with the current length.
-   *
-   * @return A new [PwdState] with a new password.
-   */
-  fun withNewPassword(): PwdState = withNewPassword(length)
 
   /**
-   * Generates a new password with the specified length.
+   * Generates a new password with the specified length and ambiguity setting.
    *
    * @param newLength The length of the new password.
+   * @param avoid The ambiguity setting.
    * @return A new [PwdState] with a new password.
    */
-  fun withNewPassword(newLength: Int): PwdState {
+  fun withNewPassword(
+    newLength: Int = length,
+    avoid: Boolean = avoidAmbiguous
+  ): PwdState {
     val stats = Stats()
-    val pwd = randomCharacters(newLength, stats)
+    val pwd = randomCharacters(newLength, avoid, stats)
     return PwdState(
       length = newLength,
       content = pwd,
       lower = stats.lower,
       upper = stats.upper,
       number = stats.number,
-      symbol = stats.symbol
+      symbol = stats.symbol,
+      avoidAmbiguous = avoid,
     )
   }
 
@@ -61,15 +61,17 @@ data class PwdState(
    * Generates a string of random characters.
    *
    * @param count The number of characters to generate.
+   * @param avoid Whether to avoid ambiguous characters.
    * @param stats The [Stats] object to track character counts.
    * @return A string of random characters.
    */
-  private fun randomCharacters(count: Int, stats: Stats): String {
+  private fun randomCharacters(count: Int, avoid: Boolean, stats: Stats): String {
     val sb = StringBuilder()
     // Make a new random for every invocation... that way we're seeded by real-world randomness.
     val random = Random(System.currentTimeMillis())
-    for (i in 0..<count) {
+    while (sb.length < count) {
       val c = '!' + random.nextInt(94)
+      if (avoid && c.isAmbiguous()) continue
       sb.append(c)
       stats.tally(c)
     }
@@ -106,3 +108,11 @@ data class PwdState(
     }
   }
 }
+
+/**
+ * Checks if a character is ambiguous.
+ *
+ * @param c The character to check.
+ * @return True if the character is ambiguous, false otherwise.
+ */
+private fun Char.isAmbiguous(): Boolean = this in "Il1|O0"
