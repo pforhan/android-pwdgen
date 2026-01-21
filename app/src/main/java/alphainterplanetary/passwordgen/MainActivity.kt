@@ -1,18 +1,17 @@
 package alphainterplanetary.passwordgen
 
-import alphainterplanetary.passwordgen.ui.ButtonColumn
-import alphainterplanetary.passwordgen.ui.ButtonRow
 import alphainterplanetary.passwordgen.ui.CopyOnClickText
 import alphainterplanetary.passwordgen.ui.HistoryList
-import alphainterplanetary.passwordgen.ui.PwdConfiguration
 import alphainterplanetary.passwordgen.ui.Links
 import alphainterplanetary.passwordgen.ui.PasswordStatistics
+import alphainterplanetary.passwordgen.ui.PwdConfiguration
 import alphainterplanetary.passwordgen.ui.theme.PasswordGenTheme
 import android.content.Context
 import android.os.Bundle
 import android.view.WindowManager.LayoutParams
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import androidx.activity.viewModels
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
@@ -108,7 +106,6 @@ internal fun PwdPortrait(
   CopyOnClickText(passwordStorage, stateFlow)
   PwdConfiguration(stateFlow)
   PasswordStatistics(context, stateFlow)
-  ButtonRow(passwordStorage, stateFlow)
   HistoryList(context, passwordStorage, stateFlow)
   Links(context)
 }
@@ -137,14 +134,7 @@ internal fun PwdLandscape(
     PasswordStatistics(context, stateFlow)
   }
 
-  // Column 2: Buttons
-  Column(
-    horizontalAlignment = Alignment.CenterHorizontally
-  ) {
-    ButtonColumn(passwordStorage, stateFlow)
-  }
-
-  // Column 3: History & Links
+  // Column 2: History & Links
   Column(
     modifier = Modifier.weight(1f),
     horizontalAlignment = Alignment.CenterHorizontally

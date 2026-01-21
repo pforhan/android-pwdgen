@@ -11,19 +11,25 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Divider
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,6 +41,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
  * @param passwordStorage The [PasswordStorage] for managing stored passwords.
  * @param stateFlow The [MutableStateFlow] for managing the UI state.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryList(
   context: Context,
@@ -44,46 +51,58 @@ fun HistoryList(
   val items = stateFlow.collectAsState().value.recent
 
   Column(
-    modifier = Modifier.wrapContentSize()
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(16.dp)
   ) {
-    DividerWithText(
-      modifier = Modifier.padding(8.dp),
+     DividerWithText(
+      modifier = Modifier.padding(bottom = 16.dp),
       text = stringResource(R.string.recent)
     )
     items.forEach { pwd ->
-      Row(
+      ElevatedCard(
         modifier = Modifier
           .fillMaxWidth()
-          .padding(8.dp)
+          .padding(vertical = 4.dp)
           .clickable {
-            copyToClipboard(
-              context, pwd
-            )
-          },
-        verticalAlignment = Alignment.CenterVertically
+            copyToClipboard(context, pwd)
+          }
       ) {
-        Text(
-          text = pwd,
-          style = TextStyle(
-            fontSize = 20.sp,
-          ),
+        Row(
           modifier = Modifier
-            .weight(1f)
-            .padding(4.dp),
-        )
-        IconButton(onClick = {
-          passwordStorage.remove(pwd)
-          stateFlow.value = stateFlow.value.copy(recent = passwordStorage.listPasswords())
-          Toast
-            .makeText(context, "Deleted from history.", Toast.LENGTH_SHORT)
-            .show()
-        }) {
-          Icon(
-            Icons.Default.Delete, contentDescription = stringResource(R.string.delete)
+            .fillMaxWidth()
+            .padding(12.dp),
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Text(
+            text = pwd,
+            fontFamily = FontFamily.Monospace,
+            style = TextStyle(
+              fontSize = 18.sp,
+            ),
+            modifier = Modifier
+              .weight(1f)
+              .padding(end = 8.dp),
           )
+          TooltipBox(
+            positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+            tooltip = { PlainTooltip { Text(stringResource(R.string.delete)) } },
+            state = rememberTooltipState()
+          ) {
+            IconButton(onClick = {
+              passwordStorage.remove(pwd)
+              stateFlow.value = stateFlow.value.copy(recent = passwordStorage.listPasswords())
+              Toast
+                .makeText(context, "Deleted from history.", Toast.LENGTH_SHORT)
+                .show()
+            }) {
+              Icon(
+                Icons.Default.Delete, contentDescription = stringResource(R.string.delete)
+              )
+            }
+          }
         }
       }
-      Divider()
     }
   }
 }
@@ -108,7 +127,7 @@ fun DividerWithText(
       text = text,
       modifier = Modifier.padding(end = 8.dp)
     )
-    Divider(
+    HorizontalDivider(
       modifier = Modifier.weight(1f),
     )
   }
