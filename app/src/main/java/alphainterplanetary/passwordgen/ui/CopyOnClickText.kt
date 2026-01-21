@@ -6,12 +6,17 @@ import alphainterplanetary.passwordgen.R
 import alphainterplanetary.passwordgen.UiState
 import alphainterplanetary.passwordgen.copyToClipboard
 import alphainterplanetary.passwordgen.maybeNewAndCopyText
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ContentCopy
@@ -30,12 +35,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import alphainterplanetary.passwordgen.ui.theme.MintHighlight
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
@@ -79,10 +87,24 @@ fun CopyOnClickText(
         style = MaterialTheme.typography.headlineMedium.copy(lineBreak = LineBreak.Simple)
       )
 
+      val isInstruction = uiState.pwdState.content == stringResource(R.string.default_instruction)
+
       Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically
       ) {
+        Row(
+          horizontalArrangement = Arrangement.spacedBy(4.dp),
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          IndicatorPill(label = "a", isActive = !isInstruction && uiState.pwdState.lower > 0)
+          IndicatorPill(label = "A", isActive = !isInstruction && uiState.pwdState.upper > 0)
+          IndicatorPill(label = "2", isActive = !isInstruction && uiState.pwdState.number > 0)
+          IndicatorPill(label = "@", isActive = !isInstruction && uiState.pwdState.symbol > 0)
+        }
+
         Spacer(modifier = Modifier.weight(1f))
         
         TooltipBox(
@@ -139,5 +161,30 @@ fun CopyOnClickText(
         }
       }
     }
+  }
+}
+
+@Composable
+private fun IndicatorPill(
+  label: String,
+  isActive: Boolean,
+  modifier: Modifier = Modifier
+) {
+  Box(
+    contentAlignment = Alignment.Center,
+    modifier = modifier
+      .size(24.dp)
+      .clip(CircleShape)
+      .background(
+        if (isActive) MintHighlight else MaterialTheme.colorScheme.onSurface.copy(
+          alpha = 0.1f
+        )
+      )
+  ) {
+    Text(
+      text = label,
+      style = MaterialTheme.typography.labelSmall,
+      color = if (isActive) Color.Black else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+    )
   }
 }
