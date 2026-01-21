@@ -14,4 +14,8 @@
   <string name="stats_total">Total:</string>
   <string name="stats_upper">Upper case:</string>
   <string name="avoid_ambiguous">Avoid\nambiguous</string>
+  <string name="count_lower">Count of lowercase: %1$d</string>
+  <string name="count_upper">Count of uppercase: %1$d</string>
+  <string name="count_number">Count of numbers: %1$d</string>
+  <string name="count_symbol">Count of symbols: %1$d</string>
 </resources>

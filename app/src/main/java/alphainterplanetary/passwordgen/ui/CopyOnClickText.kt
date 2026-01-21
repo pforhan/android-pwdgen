@@ -99,10 +99,26 @@ fun CopyOnClickText(
           horizontalArrangement = Arrangement.spacedBy(4.dp),
           verticalAlignment = Alignment.CenterVertically
         ) {
-          IndicatorPill(label = "a", isActive = !isInstruction && uiState.pwdState.lower > 0)
-          IndicatorPill(label = "A", isActive = !isInstruction && uiState.pwdState.upper > 0)
-          IndicatorPill(label = "2", isActive = !isInstruction && uiState.pwdState.number > 0)
-          IndicatorPill(label = "@", isActive = !isInstruction && uiState.pwdState.symbol > 0)
+          IndicatorPill(
+            label = "a",
+            isActive = !isInstruction && uiState.pwdState.lower > 0,
+            tooltipText = stringResource(R.string.count_lower, uiState.pwdState.lower.toInt())
+          )
+          IndicatorPill(
+            label = "A",
+            isActive = !isInstruction && uiState.pwdState.upper > 0,
+            tooltipText = stringResource(R.string.count_upper, uiState.pwdState.upper.toInt())
+          )
+          IndicatorPill(
+            label = "2",
+            isActive = !isInstruction && uiState.pwdState.number > 0,
+            tooltipText = stringResource(R.string.count_number, uiState.pwdState.number.toInt())
+          )
+          IndicatorPill(
+            label = "@",
+            isActive = !isInstruction && uiState.pwdState.symbol > 0,
+            tooltipText = stringResource(R.string.count_symbol, uiState.pwdState.symbol.toInt())
+          )
         }
 
         Spacer(modifier = Modifier.weight(1f))
@@ -164,27 +180,35 @@ fun CopyOnClickText(
   }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun IndicatorPill(
   label: String,
   isActive: Boolean,
+  tooltipText: String,
   modifier: Modifier = Modifier
 ) {
-  Box(
-    contentAlignment = Alignment.Center,
-    modifier = modifier
-      .size(24.dp)
-      .clip(CircleShape)
-      .background(
-        if (isActive) MintHighlight else MaterialTheme.colorScheme.onSurface.copy(
-          alpha = 0.1f
-        )
-      )
+  TooltipBox(
+    positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+    tooltip = { PlainTooltip { Text(tooltipText) } },
+    state = rememberTooltipState()
   ) {
-    Text(
-      text = label,
-      style = MaterialTheme.typography.labelSmall,
-      color = if (isActive) Color.Black else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-    )
+    Box(
+      contentAlignment = Alignment.Center,
+      modifier = modifier
+        .size(24.dp)
+        .clip(CircleShape)
+        .background(
+          if (isActive) MintHighlight else MaterialTheme.colorScheme.onSurface.copy(
+            alpha = 0.1f
+          )
+        )
+    ) {
+      Text(
+        text = label,
+        style = MaterialTheme.typography.labelSmall,
+        color = if (isActive) Color.Black else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+      )
+    }
   }
 }
