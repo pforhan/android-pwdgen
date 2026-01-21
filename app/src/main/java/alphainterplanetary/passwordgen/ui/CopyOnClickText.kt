@@ -146,7 +146,7 @@ fun CopyOnClickText(
           state = rememberTooltipState()
         ) {
           IconButton(onClick = {
-            copyToClipboard(context, uiState.pwdState.content)
+            maybeNewAndCopyText(context, passwordStorage, stateFlow)
           }) {
             Icon(
               imageVector = Icons.Default.ContentCopy,
