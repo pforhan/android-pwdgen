@@ -58,7 +58,7 @@ fun PwdConfiguration(stateFlow: MutableStateFlow<UiState>) {
             stateFlow.value = current.copy(pwdState = current.pwdState.withNewPassword(length))
           }
         },
-        steps = LENGTH_MAX - LENGTH_MIN - 1,
+        steps = 0,
         valueRange = LENGTH_MIN.toFloat()..LENGTH_MAX.toFloat(),
         colors = SliderDefaults.colors(
           thumbColor = MintHighlight,
