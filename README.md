@@ -11,7 +11,7 @@ A simple password creator. No local storage, no network access. Uses the Android
 
 # Releases
 
-## 1.2
+## 1.2.1
 
 ### New features
 
@@ -21,6 +21,7 @@ A simple password creator. No local storage, no network access. Uses the Android
 
 - Better Support for small screens
 - Clear icon only shows when there is a password to clear
+- smaller apk size
 
 
 ## 1.1
