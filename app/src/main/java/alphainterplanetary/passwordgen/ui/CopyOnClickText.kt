@@ -154,24 +154,26 @@ fun CopyOnClickText(
           }
         }
 
-        TooltipBox(
-          positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
-          tooltip = { PlainTooltip { Text(stringResource(R.string.delete)) } },
-          state = rememberTooltipState()
-        ) {
-          IconButton(onClick = {
-            val len = uiState.pwdState.length
-            stateFlow.value = uiState.copy(
-              pwdState = PwdState(
-                length = len,
-                content = context.getString(R.string.default_instruction)
+        if (!isInstruction) {
+          TooltipBox(
+            positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+            tooltip = { PlainTooltip { Text(stringResource(R.string.clear)) } },
+            state = rememberTooltipState()
+          ) {
+            IconButton(onClick = {
+              val len = uiState.pwdState.length
+              stateFlow.value = uiState.copy(
+                pwdState = PwdState(
+                  length = len,
+                  content = context.getString(R.string.default_instruction)
+                )
               )
-            )
-          }) {
-            Icon(
-              imageVector = Icons.Default.Clear,
-              contentDescription = stringResource(R.string.clear)
-            )
+            }) {
+              Icon(
+                imageVector = Icons.Default.Clear,
+                contentDescription = stringResource(R.string.clear)
+              )
+            }
           }
         }
       }
