@@ -75,7 +75,7 @@ fun CopyOnClickText(
     ) {
       Text(
         text = uiState.pwdState.content,
-        minLines = 3,
+        minLines = 2,
         fontFamily = FontFamily.Monospace,
         textAlign = TextAlign.Center,
         modifier = Modifier
