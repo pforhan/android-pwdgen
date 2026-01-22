@@ -7,17 +7,8 @@ This document tracks specific, actionable design recommendations to take the pas
 ### 1. Typography
 * The font is monospace, which is good, but it looks a bit thin. Use a robust, easier-to-read font like **JetBrains Mono**, **Fira Code**, or **Roboto Mono**.
 
-### 2. Controls (Slider & Settings)
-The current slider and text dump are disconnecting the user from the result.
-* **The Slider:**
-  * Move the specific length number (currently "Total: 16") so it sits **directly above or beside** the slider.
-  * Example label: **"Length: 16"**.
-  * Remove the dotted line track style; use a solid, continuous bar for a cleaner look.
-
-### 3. Color & Polish
-* **Palette:**
-  * Try a deep indigo or violet for a "security" vibe, or a bright teal/mint for a "fresh" vibe. [MINT ADDED]
-  * **Background:** instead of pure white, try a very light off-white (#F5F5F7) for the background, and keep the content areas pure white.
+### 2. Color & Polish
+* **Background:** instead of pure white, try a very light off-white (#F5F5F7) for the background, and keep the content areas pure white.
 
 ---
 
@@ -34,6 +25,10 @@ The current slider and text dump are disconnecting the user from the result.
 - [x] **Indicators - Character Types:** Replaced legacy stats block with horizontal indicator pills ("a A 2 @") inside the password card.
 - [x] **Indicators - Interaction:** Added long-press tooltips to indicator pills to show precise character counts.
 - [x] **Color - Fresh Palette:** Introduced "MintHighlight" teal/mint color for active indicator states.
+- [x] **Controls - Slider Label:** Moved length number to a "Length: X" label directly above the slider.
+- [x] **Controls - Slider Style:** Removed dotted/tick marks for a solid, continuous track.
+- [x] **Controls - Toggle Switch:** Replaced the "Avoid Ambiguous" checkbox with a mint-colored Switch.
+- [x] **Controls - Touch Targets:** Made the "Avoid Ambiguous" text label a touch target for toggling the setting.
 
 ---
 
@@ -42,4 +37,4 @@ The current slider and text dump are disconnecting the user from the result.
 - [ ] **Hero - Large Font:** "let's hold off on this for now, as the text is already large and I'd need to measure multiple devices" (User preference).
 - [ ] **Action Buttons - Big "GENERATE NEW" Button:** Replaced with integrated icon buttons in the hero card.
 - [ ] **Action Buttons - "Outlined" style Copy button:** Integrated as icon button instead.
-- [ ] **Controls - "Avoid Ambiguous" Switch:** User maintained the checkbox and updated instructions for the "+" icon instead. (Marked as obsolete for now based on recent layout simplification).
+- [ ] **Indicator - Statistics Block:** Replaced with condensed indicator pills inside the hero card.

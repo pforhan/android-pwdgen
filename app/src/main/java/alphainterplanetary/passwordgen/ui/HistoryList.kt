@@ -65,7 +65,11 @@ fun HistoryList(
           .fillMaxWidth()
           .padding(vertical = 4.dp)
           .clickable {
-            copyToClipboard(context, pwd)
+            copyToClipboard(
+              context = context,
+              value = pwd,
+              message = context.getString(R.string.copied_history)
+            )
           }
       ) {
         Row(

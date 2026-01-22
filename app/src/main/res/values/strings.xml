@@ -1,6 +1,8 @@
 <resources>
   <string name="app_name">Alpha\u2019s Passwords</string>
-  <string name="copied_current">Copied current to clipboard</string>
+  <string name="clear">Clear</string>
+  <string name="copied_current">Copied current entry to clipboard</string>
+  <string name="copied_history">Copied history entry to clipboard</string>
   <string name="copied_password">Copied Password</string>
   <string name="copy">Copy</string>
   <string name="default_instruction">Tap + to generate a password.</string>

@@ -4,8 +4,8 @@ import alphainterplanetary.passwordgen.PasswordStorage
 import alphainterplanetary.passwordgen.PwdState
 import alphainterplanetary.passwordgen.R
 import alphainterplanetary.passwordgen.UiState
-import alphainterplanetary.passwordgen.copyToClipboard
 import alphainterplanetary.passwordgen.maybeNewAndCopyText
+import alphainterplanetary.passwordgen.ui.theme.MintHighlight
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,8 +19,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.ContentCopy
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -43,7 +43,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import alphainterplanetary.passwordgen.ui.theme.MintHighlight
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
@@ -170,8 +169,8 @@ fun CopyOnClickText(
             )
           }) {
             Icon(
-              imageVector = Icons.Default.Delete,
-              contentDescription = stringResource(R.string.delete)
+              imageVector = Icons.Default.Clear,
+              contentDescription = stringResource(R.string.clear)
             )
           }
         }
