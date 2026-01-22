@@ -13,7 +13,6 @@ The current slider and text dump are disconnecting the user from the result.
   * Move the specific length number (currently "Total: 16") so it sits **directly above or beside** the slider.
   * Example label: **"Length: 16"**.
   * Remove the dotted line track style; use a solid, continuous bar for a cleaner look.
-* **The "Stats" Text Block:** [COMPLETED]
 
 ### 3. Color & Polish
 * **Palette:**
