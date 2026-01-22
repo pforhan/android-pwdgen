@@ -3,7 +3,6 @@ package alphainterplanetary.passwordgen
 import alphainterplanetary.passwordgen.ui.CopyOnClickText
 import alphainterplanetary.passwordgen.ui.HistoryList
 import alphainterplanetary.passwordgen.ui.Links
-import alphainterplanetary.passwordgen.ui.PasswordStatistics
 import alphainterplanetary.passwordgen.ui.PwdConfiguration
 import alphainterplanetary.passwordgen.ui.theme.PasswordGenTheme
 import android.content.Context
@@ -105,7 +104,6 @@ internal fun PwdPortrait(
   )
   CopyOnClickText(passwordStorage, stateFlow)
   PwdConfiguration(stateFlow)
-  PasswordStatistics(context, stateFlow)
   HistoryList(context, passwordStorage, stateFlow)
   Links(context)
 }
@@ -131,7 +129,6 @@ internal fun PwdLandscape(
   ) {
     CopyOnClickText(passwordStorage, stateFlow)
     PwdConfiguration(stateFlow)
-    PasswordStatistics(context, stateFlow)
   }
 
   // Column 2: History & Links

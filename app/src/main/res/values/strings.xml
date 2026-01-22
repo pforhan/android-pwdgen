@@ -8,11 +8,6 @@
   <string name="header">Password Generator</string>
   <string name="generate_new">Generate New</string>
   <string name="recent">Recent</string>
-  <string name="stats_lower">Lower case:</string>
-  <string name="stats_number">Numbers:</string>
-  <string name="stats_symbol">Symbols:</string>
-  <string name="stats_total">Total:</string>
-  <string name="stats_upper">Upper case:</string>
   <string name="avoid_ambiguous">Avoid\nambiguous</string>
   <string name="count_lower">Count of lowercase: %1$d</string>
   <string name="count_upper">Count of uppercase: %1$d</string>

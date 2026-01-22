@@ -13,14 +13,11 @@ The current slider and text dump are disconnecting the user from the result.
   * Move the specific length number (currently "Total: 16") so it sits **directly above or beside** the slider.
   * Example label: **"Length: 16"**.
   * Remove the dotted line track style; use a solid, continuous bar for a cleaner look.
-* **The "Stats" Text Block:**
-  * The breakdown (Lower case: 5, Upper case: 1, etc.) is "technical clutter."
-  * **Recommendation:** Replace this text block with toggle chips or checkboxes for complexity options (e.g., [x] Uppercase, [x] Numbers, [x] Symbols).
-  * If you must keep the counts, make them small, horizontal pills below the password, rather than a vertical list.
+* **The "Stats" Text Block:** [COMPLETED]
 
 ### 3. Color & Polish
 * **Palette:**
-  * Try a deep indigo or violet for a "security" vibe, or a bright teal/mint for a "fresh" vibe.
+  * Try a deep indigo or violet for a "security" vibe, or a bright teal/mint for a "fresh" vibe. [MINT ADDED]
   * **Background:** instead of pure white, try a very light off-white (#F5F5F7) for the background, and keep the content areas pure white.
 
 ---
@@ -35,6 +32,9 @@ The current slider and text dump are disconnecting the user from the result.
 - [x] **Recent List - Spacing:** Added internal padding to history cards.
 - [x] **Tooltips:** Added long-press help text to all action buttons in cards.
 - [x] **Feedback:** Ensure there is a "Toast" notification when copying to clipboard.
+- [x] **Indicators - Character Types:** Replaced legacy stats block with horizontal indicator pills ("a A 2 @") inside the password card.
+- [x] **Indicators - Interaction:** Added long-press tooltips to indicator pills to show precise character counts.
+- [x] **Color - Fresh Palette:** Introduced "MintHighlight" teal/mint color for active indicator states.
 
 ---
 
