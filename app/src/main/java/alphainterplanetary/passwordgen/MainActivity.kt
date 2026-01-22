@@ -78,7 +78,12 @@ internal fun PwdColumn(
   stateFlow: MutableStateFlow<UiState>,
 ) {
   val configuration = LocalConfiguration.current
-  if (configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE) {
+  val isLandscape = configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+  val isWideEnough = configuration.screenWidthDp >= 600
+
+  // Only use landscape if the screen is wide enough. For example, some foldables
+  // report landscape orientation even when the screen is small.
+  if (isLandscape && isWideEnough) {
     PwdLandscape(context, passwordStorage, stateFlow)
   } else {
     PwdPortrait(context, passwordStorage, stateFlow)
