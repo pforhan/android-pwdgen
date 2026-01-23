@@ -23,7 +23,6 @@ A simple password creator. No local storage, no network access. Uses the Android
 - Clear icon only shows when there is a password to clear
 - smaller apk size
 
-
 ## 1.1
 
 ### New features
