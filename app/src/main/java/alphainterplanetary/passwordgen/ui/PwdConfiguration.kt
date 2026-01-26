@@ -20,7 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
-import alphainterplanetary.passwordgen.ui.theme.MintHighlight
+import alphainterplanetary.passwordgen.ui.theme.LocalMintHighlight
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -61,9 +61,9 @@ fun PwdConfiguration(stateFlow: MutableStateFlow<UiState>) {
         steps = 0,
         valueRange = LENGTH_MIN.toFloat()..LENGTH_MAX.toFloat(),
         colors = SliderDefaults.colors(
-          thumbColor = MintHighlight,
-          activeTrackColor = MintHighlight,
-          inactiveTrackColor = MintHighlight.copy(alpha = 0.24f)
+          thumbColor = LocalMintHighlight.current,
+          activeTrackColor = LocalMintHighlight.current,
+          inactiveTrackColor = LocalMintHighlight.current.copy(alpha = 0.24f)
         )
       )
     }
@@ -99,9 +99,9 @@ private fun AvoidAmbiguousToggle(stateFlow: MutableStateFlow<UiState>, checked: 
       checked = checked,
       onCheckedChange = null, // Handled by toggleable row
       colors = SwitchDefaults.colors(
-        checkedThumbColor = MintHighlight,
-        checkedTrackColor = MintHighlight.copy(alpha = 0.5f),
-        checkedBorderColor = MintHighlight,
+        checkedThumbColor = LocalMintHighlight.current,
+        checkedTrackColor = LocalMintHighlight.current.copy(alpha = 0.5f),
+        checkedBorderColor = LocalMintHighlight.current,
         uncheckedThumbColor = MaterialTheme.colorScheme.outline,
         uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
       )

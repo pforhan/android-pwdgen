@@ -13,6 +13,11 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
+import alphainterplanetary.passwordgen.ui.DeviceUtils
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
@@ -37,6 +42,8 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+val LocalMintHighlight = staticCompositionLocalOf { MintHighlight }
+
 @Composable
 fun PasswordGenTheme(
   darkTheme: Boolean = isSystemInDarkTheme(),
@@ -53,6 +60,10 @@ fun PasswordGenTheme(
     darkTheme -> DarkColorScheme
     else -> LightColorScheme
   }
+  
+  val isEPaper = remember { DeviceUtils.isEPaperDevice() }
+  val mintColor = if (isEPaper) MintHighlightDeep else MintHighlight
+
   val view = LocalView.current
   if (!view.isInEditMode) {
     SideEffect {
@@ -62,9 +73,11 @@ fun PasswordGenTheme(
     }
   }
 
-  MaterialTheme(
-    colorScheme = colorScheme,
-    typography = Typography,
-    content = content
-  )
+  CompositionLocalProvider(LocalMintHighlight provides mintColor) {
+    MaterialTheme(
+      colorScheme = colorScheme,
+      typography = Typography,
+      content = content
+    )
+  }
 }

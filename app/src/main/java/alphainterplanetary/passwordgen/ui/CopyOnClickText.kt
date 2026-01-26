@@ -5,7 +5,7 @@ import alphainterplanetary.passwordgen.PwdState
 import alphainterplanetary.passwordgen.R
 import alphainterplanetary.passwordgen.UiState
 import alphainterplanetary.passwordgen.maybeNewAndCopyText
-import alphainterplanetary.passwordgen.ui.theme.MintHighlight
+import alphainterplanetary.passwordgen.ui.theme.LocalMintHighlight
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -200,7 +200,7 @@ private fun IndicatorPill(
         .size(24.dp)
         .clip(CircleShape)
         .background(
-          if (isActive) MintHighlight else MaterialTheme.colorScheme.onSurface.copy(
+          if (isActive) LocalMintHighlight.current else MaterialTheme.colorScheme.onSurface.copy(
             alpha = 0.1f
           )
         )
