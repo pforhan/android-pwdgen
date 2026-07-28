@@ -9,3 +9,5 @@ local.properties
 .cxx
 local.properties
 .kotlin
+/.artifacts
+/app/build
